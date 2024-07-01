@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         VENV_DIR = 'venv'
-        DEPLOY_DIR = 'C:\\path\\to\\deployment\\dir' // Change this to your desired deployment directory
+        DEPLOY_DIR = "C:\\Users\\User\\Documents\\Stage2024\\deployment\\"' // Change this to your desired deployment directory
     }
 
     stages {
