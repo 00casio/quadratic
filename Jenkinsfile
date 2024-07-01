@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         VENV_DIR = 'venv'
+        DEPLOY_DIR = 'C:\\path\\to\\deployment\\dir' // Change this to your desired deployment directory
     }
 
     stages {
@@ -13,33 +14,34 @@ pipeline {
         }
         stage('Setup') {
             steps {
-                sh 'python3 -m venv ${VENV_DIR}'
-                sh '. ${VENV_DIR}/bin/activate && pip install --upgrade pip'
-                sh '. ${VENV_DIR}/bin/activate && pip install -r requirements.txt'
+                bat 'python -m venv %VENV_DIR%'
+                bat '%VENV_DIR%\\Scripts\\activate && pip install --upgrade pip'
+                bat '%VENV_DIR%\\Scripts\\activate && pip install -r requirements.txt'
             }
         }
         stage('Build') {
             steps {
                 echo 'Building the Python project...'
-                sh '. ${VENV_DIR}/bin/activate && python setup.py build'
+                bat '%VENV_DIR%\\Scripts\\activate && python setup.py build'
             }
         }
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                sh '. ${VENV_DIR}/bin/activate && pytest tests/'
+                bat '%VENV_DIR%\\Scripts\\activate && pytest tests\\'
             }
         }
         stage('Package') {
             steps {
                 echo 'Packaging the Python project...'
-                sh '. ${VENV_DIR}/bin/activate && python setup.py sdist'
+                bat '%VENV_DIR%\\Scripts\\activate && python setup.py sdist'
             }
         }
         stage('Deploy') {
             steps {
-                echo 'Deploying the Python project...'
-                // Add your deployment steps here
+                echo 'Deploying the Python project locally...'
+                bat 'if not exist %DEPLOY_DIR% mkdir %DEPLOY_DIR%'
+                bat 'copy dist\\*.tar.gz %DEPLOY_DIR%'
             }
         }
     }
